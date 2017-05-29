@@ -26,16 +26,23 @@ namespace BoundServiceDemo
 		{
 			Binder = service as TimestampBinder;
 			IsConnected = this.Binder != null;
+
+            string message = "onServiceConnected - ";
 			Log.Debug(TAG, $"OnServiceConnected {name.ClassName}");
 
 			if (IsConnected)
 			{
-				mainActivity.timestampMessageTextView.SetText(Resource.String.service_started);
+                message = message + " bound to service " + name.ClassName;
+                mainActivity.UpdateUiForBoundService();
 			}
 			else
 			{
-				mainActivity.timestampMessageTextView.SetText(Resource.String.service_not_connected);
+				message = message + " not bound to service " + name.ClassName;
+                mainActivity.UpdateUiForUnboundService();
 			}
+
+            Log.Info(TAG, message);
+            mainActivity.timestampMessageTextView.Text = message;
 
 		}
 
@@ -44,7 +51,7 @@ namespace BoundServiceDemo
 			Log.Debug(TAG, $"OnServiceDisconnected {name.ClassName}");
 			IsConnected = false;
 			Binder = null;
-			mainActivity.timestampMessageTextView.SetText(Resource.String.service_not_connected);
+            mainActivity.UpdateUiForUnboundService();
 		}
 
 		public string GetFormattedTimestamp()
